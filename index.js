@@ -6,5 +6,3 @@ const api = new Api
 const model = new Model
 
 const tasksView = new View(api, model)
-
-tasksView.displayAllTasks()

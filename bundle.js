@@ -11,24 +11,11 @@
         constructor(api2, model2) {
           this.api = api2, this.model = model2;
           this.body = document.querySelector("body");
+          this.containerEL = document.querySelector("#testBox");
           this.move = false;
           this.taskCounter = 0;
           this.divName;
-          this.tasksContainerEL = document.querySelector("#tasksContainer");
-          this.tasksContainerEL.addEventListener("click", (e) => {
-            let xPosition = e.clientX;
-            let yPosition2 = e.clientY;
-            let translatedPosition = `translate3d(${xPosition}px, ${yPosition2}px, 0)`;
-            console.log(translatedPosition);
-            if (this.move) {
-              this.targetEl = document.querySelector(`#${this.divName}`);
-              this.targetEl.style.transform = translatedPosition;
-              this.move = false;
-            }
-            this.#setTaskEventListeners();
-          });
           this.#setTasks();
-          this.#setTaskEventListeners();
           this.textInputEL = document.querySelector("#tasks-input");
           this.addTaskEL = document.querySelector("#add-task");
           this.addTaskEL.addEventListener("click", () => {
@@ -40,19 +27,16 @@
           this.taskCounter += 1;
           const div = document.createElement("div");
           div.textContent = text;
+          div.draggable = true;
           div.className = "tasks";
-          div.id = `tasks${this.taskCounter}`;
-          this.tasksContainerEL.append(div);
+          div.id = `task${this.taskCounter}`;
+          div.addEventListener("dragstart", this.#dragStart);
+          this.containerEL.append(div);
           this.textInputEL.value = "";
         }
         displayAllTasks() {
           for (const e of this.model.allTasks()) {
-            this.taskCounter += 1;
-            const div = document.createElement("div");
-            div.textContent = e.description;
-            div.className = "tasks";
-            div.id = `tasks${this.taskCounter}`;
-            this.tasksContainerEL.append(div);
+            this.createTask(e.description);
           }
         }
         #setTasks() {
@@ -61,20 +45,12 @@
             this.displayAllTasks();
           });
         }
-        #setTaskEventListeners() {
-          this.taskELs = document.querySelectorAll(".tasks");
-          console.log(this.taskELs);
-          this.taskELs.forEach((task) => {
-            task.addEventListener("dblclick", () => {
-              this.move = true;
-              this.divName = task.id;
-            });
-          });
-        }
-        #moveTask(e, el) {
-          let xPosition = e.clientX;
-          let translatedPosition = `translate3d(${xPosition}px, ${yPosition}px, 0)`;
-          el.style.transform = translatedPosition;
+        #dragStart(e) {
+          console.log(e.dataTransfer.setData("text/plain", e.target.id));
+          e.dataTransfer.setData("text/plain", e.target.id);
+          setTimeout(() => {
+            e.target.classList.add("hide");
+          }, 0);
         }
       };
       module.exports = TaskView;
@@ -128,4 +104,40 @@
   var api = new Api();
   var model = new Model();
   var tasksView = new View(api, model);
+  var tasks = document.querySelectorAll(".tasks");
+  tasks.forEach((task) => {
+    task.addEventListener("dragstart", dragStart);
+  });
+  function dragStart(e) {
+    e.dataTransfer.setData("text/plain", e.target.id);
+    setTimeout(() => {
+      e.target.classList.add("hide");
+    }, 0);
+  }
+  var boxes = document.querySelectorAll(".box");
+  boxes.forEach((box) => {
+    box.addEventListener("dragenter", dragEnter);
+    box.addEventListener("dragover", dragOver);
+    box.addEventListener("dragleave", dragLeave);
+    box.addEventListener("drop", drop);
+  });
+  function dragEnter(e) {
+    e.preventDefault();
+    e.target.classList.add("drag-over");
+  }
+  function dragOver(e) {
+    e.preventDefault();
+    e.target.classList.add("drag-over");
+  }
+  function dragLeave(e) {
+    e.target.classList.remove("drag-over");
+  }
+  function drop(e) {
+    e.target.classList.remove("drag-over");
+    const id = e.dataTransfer.getData("text/plain");
+    console.log(id);
+    const draggable = document.getElementById(id);
+    e.target.appendChild(draggable);
+    draggable.classList.remove("hide");
+  }
 })();

@@ -11,21 +11,24 @@
         constructor(api2, model2) {
           this.api = api2, this.model = model2;
           this.body = document.querySelector("body");
+          this.move = false;
+          this.taskCounter = 0;
+          this.divName;
           this.tasksContainerEL = document.querySelector("#tasksContainer");
           this.tasksContainerEL.addEventListener("click", (e) => {
             let xPosition = e.clientX;
-            let yPosition = e.clientY;
-            let translatedPosition = `translate3d(${xPosition}px, ${yPosition}px, 0)`;
+            let yPosition2 = e.clientY;
+            let translatedPosition = `translate3d(${xPosition}px, ${yPosition2}px, 0)`;
             console.log(translatedPosition);
-            this.taskEL = document.querySelector("#tasks");
             if (this.move) {
-              this.taskEL.style.transform = translatedPosition;
+              this.targetEl = document.querySelector(`#${this.divName}`);
+              this.targetEl.style.transform = translatedPosition;
               this.move = false;
             }
-            this.taskSelected = true;
             this.#setTaskEventListeners();
           });
           this.#setTasks();
+          this.#setTaskEventListeners();
           this.textInputEL = document.querySelector("#tasks-input");
           this.addTaskEL = document.querySelector("#add-task");
           this.addTaskEL.addEventListener("click", () => {
@@ -34,19 +37,21 @@
           });
         }
         createTask(text) {
+          this.taskCounter += 1;
           const div = document.createElement("div");
           div.textContent = text;
           div.className = "tasks";
-          div.id = "tasks";
+          div.id = `tasks${this.taskCounter}`;
           this.tasksContainerEL.append(div);
           this.textInputEL.value = "";
         }
         displayAllTasks() {
           for (const e of this.model.allTasks()) {
+            this.taskCounter += 1;
             const div = document.createElement("div");
             div.textContent = e.description;
             div.className = "tasks";
-            div.id = "tasks";
+            div.id = `tasks${this.taskCounter}`;
             this.tasksContainerEL.append(div);
           }
         }
@@ -57,9 +62,19 @@
           });
         }
         #setTaskEventListeners() {
-          this.taskEL.addEventListener("dblclick", () => {
-            this.move = true;
+          this.taskELs = document.querySelectorAll(".tasks");
+          console.log(this.taskELs);
+          this.taskELs.forEach((task) => {
+            task.addEventListener("dblclick", () => {
+              this.move = true;
+              this.divName = task.id;
+            });
           });
+        }
+        #moveTask(e, el) {
+          let xPosition = e.clientX;
+          let translatedPosition = `translate3d(${xPosition}px, ${yPosition}px, 0)`;
+          el.style.transform = translatedPosition;
         }
       };
       module.exports = TaskView;

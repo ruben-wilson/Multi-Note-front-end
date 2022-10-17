@@ -4,10 +4,10 @@
     return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
   };
 
-  // lib/tasksView.js
+  // lib/components/tasksView.js
   var require_tasksView = __commonJS({
-    "lib/tasksView.js"(exports, module) {
-      var TaskView = class {
+    "lib/components/tasksView.js"(exports, module) {
+      var TaskView2 = class {
         constructor(api2, model2) {
           this.api = api2, this.model = model2;
           this.body = document.querySelector("body");
@@ -53,7 +53,7 @@
           }, 0);
         }
       };
-      module.exports = TaskView;
+      module.exports = TaskView2;
     }
   });
 
@@ -97,47 +97,53 @@
     }
   });
 
+  // lib/components/dropboxView.js
+  var require_dropboxView = __commonJS({
+    "lib/components/dropboxView.js"(exports, module) {
+      var DropBoxesView = class {
+        constructor() {
+          this.boxes = document.querySelectorAll(".box");
+          this.setBoxEvents();
+        }
+        setBoxEvents() {
+          this.boxes.forEach((box) => {
+            box.addEventListener("dragenter", this.dragEnter);
+            box.addEventListener("dragover", this.dragOver);
+            box.addEventListener("dragleave", this.dragLeave);
+            box.addEventListener("drop", this.drop);
+          });
+        }
+        dragEnter(e) {
+          e.preventDefault();
+          e.target.classList.add("drag-over");
+        }
+        dragOver(e) {
+          e.preventDefault();
+          e.target.classList.add("drag-over");
+        }
+        dragLeave(e) {
+          e.target.classList.remove("drag-over");
+        }
+        drop(e) {
+          e.target.classList.remove("drag-over");
+          const id = e.dataTransfer.getData("text/plain");
+          console.log(id);
+          const draggable = document.getElementById(id);
+          e.target.appendChild(draggable);
+          draggable.classList.remove("hide");
+        }
+      };
+      module.exports = DropBoxesView;
+    }
+  });
+
   // index.js
-  var View = require_tasksView();
+  var TaskView = require_tasksView();
   var Api = require_tasksApi();
   var Model = require_tasksModel();
+  var DropBoxView = require_dropboxView();
   var api = new Api();
   var model = new Model();
-  var tasksView = new View(api, model);
-  var tasks = document.querySelectorAll(".tasks");
-  tasks.forEach((task) => {
-    task.addEventListener("dragstart", dragStart);
-  });
-  function dragStart(e) {
-    e.dataTransfer.setData("text/plain", e.target.id);
-    setTimeout(() => {
-      e.target.classList.add("hide");
-    }, 0);
-  }
-  var boxes = document.querySelectorAll(".box");
-  boxes.forEach((box) => {
-    box.addEventListener("dragenter", dragEnter);
-    box.addEventListener("dragover", dragOver);
-    box.addEventListener("dragleave", dragLeave);
-    box.addEventListener("drop", drop);
-  });
-  function dragEnter(e) {
-    e.preventDefault();
-    e.target.classList.add("drag-over");
-  }
-  function dragOver(e) {
-    e.preventDefault();
-    e.target.classList.add("drag-over");
-  }
-  function dragLeave(e) {
-    e.target.classList.remove("drag-over");
-  }
-  function drop(e) {
-    e.target.classList.remove("drag-over");
-    const id = e.dataTransfer.getData("text/plain");
-    console.log(id);
-    const draggable = document.getElementById(id);
-    e.target.appendChild(draggable);
-    draggable.classList.remove("hide");
-  }
+  var tasksView = new TaskView(api, model);
+  var dropboxView = new DropBoxView();
 })();

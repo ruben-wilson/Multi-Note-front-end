@@ -34,7 +34,8 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-   margin: 10px;
+  margin: 10px;
+  height: max-content;
   overflow-x: hidden;
   overflow-y: auto;
 }
@@ -65,6 +66,13 @@ body {
   margin: 2px;
 }
 
+.footerContainer{
+  border: 1px black;
+  grid-column-start: 1;
+  grid-column-end: 4;
+  grid-row: 4;
+}
+
 h1 {
   font-size: 9px;
   margin-top: -82px;
@@ -76,7 +84,7 @@ h1 {
 
 .box {
   /* flex-basis: 100px; */
-  height: 100vh;
+  /* height: 100vh; */
   width: 50rem;
   border: solid 3px #ccc;
   margin: 10px;

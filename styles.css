@@ -7,13 +7,13 @@
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   font-size: 16px;
-  background-color: #E9EFC0;
+  background-color: #4E944F;
 }
 
 .page{
   width: 100vw;
   height: 100vh;
-  background-color: #E9EFC0;
+  background-color: #4E944F;
   display: grid;
 
   grid-template-columns: 1fr 1fr 1fr;
@@ -22,21 +22,20 @@ body {
 }
 
 .taskContainer {
-  /* float: left; */
-  /* height: 100vh;
-  width: 720px; */
-
   grid-column-start: 1;
   grid-column-end: 3;
   grid-row-start: 2;
   grid-row-end: 4;
-  display: flex;
+  /* display: flex; */
+  width: fit-content;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   margin: 10px;
-  height: max-content;
-  overflow-x: hidden;
+  padding: 10px;
+  /* margin-top: 10rem; */
+  /* height: max-content; */
+  /* overflow-x: hidden; */
   overflow-y: auto;
 }
 
@@ -45,15 +44,12 @@ body {
   grid-row-start: 2;
   grid-row-end: 4;
   width: 25rem;
-  background: #83BD75;
-  display: flex;
-  justify-content: center;
+  background: #B4E197;
 
 }
 
 .headerContainer {
-  border: solid 5px #4E944F;
-
+  border: dashed 3px #83BD75;
   grid-column-start: 1;
   grid-column-end: 4;
   grid-row: 1;
@@ -64,10 +60,13 @@ body {
 
 .headerEl{
   margin: 2px;
+  border-radius: 10px;
+  border: 0;
+    box-shadow: 0 0 15px 4px rgba(0, 0, 0, 0.06);
 }
 
 .footerContainer{
-  border: solid 5px #4E944F;
+  border: dashed 3px #83BD75;
   grid-column-start: 1;
   grid-column-end: 4;
   grid-row: 4;
@@ -79,13 +78,20 @@ h1 {
   margin-bottom: 0px;
   width: 30px;
   margin-right: 20px;
-  background: white;
+ 
+}
+
+h2{
+  grid-column: 3;
+  grid-row: 1;
+  margin-left: 10rem;
 }
 
 .box {
   /* flex-basis: 100px; */
   /* height: 100vh; */
   width: 50rem;
+  height: 75px;
   border: solid 3px #B4E197;
   
   grid-column: 2;
@@ -104,8 +110,32 @@ h1 {
   width: 75px;
   background-color: #B4E197;
   border-right: dashed 3px #E9EFC0;
-
 }
+
+.goals{
+  height: 75px;
+  width: 23rem;
+  text-align: center;
+  border-radius: 10px;
+  margin-left: 1rem;
+  margin-top: 5px;
+  background-color: #83BD75;
+  border-bottom: dashed 3px #E9EFC0;
+}
+
+#dailyGoalsText{
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-size: 20px;
+  grid-row: 1;
+  grid-column: 1;
+  margin-left: 25rem;
+  margin-top: 27px;
+  font-weight: bold;
+}
+
+
+
+
 
 .drop-targets {
   display: flex;

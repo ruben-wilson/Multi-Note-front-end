@@ -4,19 +4,17 @@
     return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
   };
 
-  // lib/components/tasksView.js
-  var require_tasksView = __commonJS({
-    "lib/components/tasksView.js"(exports, module) {
-      var TaskView2 = class {
-        constructor(api2, model2) {
-          this.api = api2, this.model = model2;
+  // lib/controllers/tasksController.js
+  var require_tasksController = __commonJS({
+    "lib/controllers/tasksController.js"(exports, module) {
+      var tasksController2 = class {
+        constructor(api, model) {
+          this.api = api, this.model = model;
           this.body = document.querySelector("body");
           this.containerEL = document.querySelector("#testBox");
-          this.move = false;
           this.taskCounter = 0;
-          this.divName;
           this.#setTasks();
-          this.textInputEL = document.querySelector("#tasks-input");
+          this.textInputEL = document.querySelector("#input");
           this.addTaskEL = document.querySelector("#add-task");
           this.addTaskEL.addEventListener("click", () => {
             this.api.saveData(this.textInputEL.value);
@@ -32,7 +30,7 @@
           div.id = `task${this.taskCounter}`;
           div.addEventListener("dragstart", this.#dragStart);
           this.containerEL.append(div);
-          this.textInputEL.value = "";
+          this.textInputEL.value = " ";
         }
         displayAllTasks() {
           for (const e of this.model.allTasks()) {
@@ -46,20 +44,19 @@
           });
         }
         #dragStart(e) {
-          console.log(e.dataTransfer.setData("text/plain", e.target.id));
           e.dataTransfer.setData("text/plain", e.target.id);
           setTimeout(() => {
             e.target.classList.add("hide");
           }, 0);
         }
       };
-      module.exports = TaskView2;
+      module.exports = tasksController2;
     }
   });
 
-  // lib/tasksApi.js
+  // lib/apis/tasksApi.js
   var require_tasksApi = __commonJS({
-    "lib/tasksApi.js"(exports, module) {
+    "lib/apis/tasksApi.js"(exports, module) {
       var TasksAPi = class {
         loadData(callback) {
           fetch("http://localhost:3000/tasks").then((response) => response.json()).then((response_json) => callback(response_json));
@@ -79,10 +76,10 @@
     }
   });
 
-  // lib/tasksModel.js
+  // lib/models/tasksModel.js
   var require_tasksModel = __commonJS({
-    "lib/tasksModel.js"(exports, module) {
-      var TasksModel = class {
+    "lib/models/tasksModel.js"(exports, module) {
+      var TasksModel2 = class {
         constructor() {
           this.tasks = [];
         }
@@ -93,13 +90,13 @@
           return this.tasks;
         }
       };
-      module.exports = TasksModel;
+      module.exports = TasksModel2;
     }
   });
 
-  // lib/components/dropboxView.js
-  var require_dropboxView = __commonJS({
-    "lib/components/dropboxView.js"(exports, module) {
+  // lib/controllers/dropboxview.js
+  var require_dropboxview = __commonJS({
+    "lib/controllers/dropboxview.js"(exports, module) {
       var DropBoxesView = class {
         constructor() {
           this.boxes = document.querySelectorAll(".box");
@@ -127,7 +124,6 @@
         drop(e) {
           e.target.classList.remove("drag-over");
           const id = e.dataTransfer.getData("text/plain");
-          console.log(id);
           const draggable = document.getElementById(id);
           e.target.appendChild(draggable);
           draggable.classList.remove("hide");
@@ -137,13 +133,100 @@
     }
   });
 
+  // lib/controllers/goalsController.js
+  var require_goalsController = __commonJS({
+    "lib/controllers/goalsController.js"(exports, module) {
+      var goalsController2 = class {
+        constructor(api, model) {
+          this.api = api;
+          this.model = model;
+          this.goalsContainerEL = document.querySelector(".goalsContainer");
+          this.#setGoals();
+          this.textInputEL = document.querySelector("#input");
+          this.addGoalEl = document.querySelector("#add-goal");
+          this.addGoalEl.addEventListener("click", () => {
+            this.api.saveData(this.textInputEL.value);
+            this.createGoal(this.textInputEL.value);
+          });
+        }
+        createGoal(text) {
+          const div = document.createElement("div");
+          div.textContent = text;
+          div.draggable = true;
+          div.className = "goals";
+          div.id = "goal";
+          this.goalsContainerEL.append(div);
+          this.textInputEL.value = "";
+        }
+        displayAllGoals() {
+          for (const goal of this.model.allGoals()) {
+            this.createGoal(goal.description);
+          }
+        }
+        #setGoals() {
+          this.api.loadData((response) => {
+            this.model.setGoals(response);
+            this.displayAllGoals();
+          });
+        }
+      };
+      module.exports = goalsController2;
+    }
+  });
+
+  // lib/apis/goalsApi.js
+  var require_goalsApi = __commonJS({
+    "lib/apis/goalsApi.js"(exports, module) {
+      var GoalsApi = class {
+        loadData(callback) {
+          fetch("http://localhost:3000/goals").then((response) => response.json()).then((response_json) => callback(response_json));
+        }
+        saveData(input) {
+          const input_data = { data: input };
+          fetch("http://localhost:3000/goals", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify(input_data)
+          }).then((response) => console.log(response));
+        }
+      };
+      module.exports = GoalsApi;
+    }
+  });
+
+  // lib/models/goalsModel.js
+  var require_goalsModel = __commonJS({
+    "lib/models/goalsModel.js"(exports, module) {
+      var GoalsModel2 = class {
+        constructor() {
+          this.goals = [];
+        }
+        setGoals(goals_array) {
+          this.goals = goals_array;
+        }
+        allGoals() {
+          return this.goals;
+        }
+      };
+      module.exports = GoalsModel2;
+    }
+  });
+
   // index.js
-  var TaskView = require_tasksView();
-  var Api = require_tasksApi();
-  var Model = require_tasksModel();
-  var DropBoxView = require_dropboxView();
-  var api = new Api();
-  var model = new Model();
-  var tasksView = new TaskView(api, model);
+  var TasksController = require_tasksController();
+  var TaskApi = require_tasksApi();
+  var TasksModel = require_tasksModel();
+  var DropBoxView = require_dropboxview();
+  var GoalsController = require_goalsController();
+  var GoalApi = require_goalsApi();
+  var GoalsModel = require_goalsModel();
+  var taskApi = new TaskApi();
+  var taskModel = new TasksModel();
+  var goalApi = new GoalApi();
+  var goalModel = new GoalsModel();
+  var tasksController = new TasksController(taskApi, taskModel);
+  var goalsController = new GoalsController(goalApi, goalModel);
   var dropboxView = new DropBoxView();
 })();

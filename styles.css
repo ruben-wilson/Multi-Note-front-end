@@ -85,6 +85,7 @@ h2{
   grid-column: 3;
   grid-row: 1;
   margin-left: 10rem;
+  margin-top: 23px;
 }
 
 .box {
@@ -94,10 +95,7 @@ h2{
   height: 75px;
   border: solid 3px #B4E197;
   
-  grid-column: 2;
-
-   
-  margin: 10px;
+  grid-column: 2; 
   /* align items in the box */
   display: flex;
   align-items: center;
@@ -128,9 +126,13 @@ h2{
   font-size: 20px;
   grid-row: 1;
   grid-column: 1;
-  margin-left: 25rem;
+  margin-left: 23rem;
   margin-top: 27px;
   font-weight: bold;
+  display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 7rem;
   /* font-weight: bold; */
 
 }

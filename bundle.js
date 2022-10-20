@@ -18,7 +18,12 @@
           this.addTaskEL = document.querySelector("#add-task");
           this.addTaskEL.addEventListener("click", () => {
             this.api.saveData(this.textInputEL.value);
+            this.model.addTask(this.textInputEL.value);
             this.createTask(this.textInputEL.value);
+          });
+          this.deleteTaskEl = document.querySelector("#delete-task-button");
+          this.deleteTaskEl.addEventListener("click", () => {
+            this.deleteTask();
           });
         }
         createTask(text) {
@@ -36,6 +41,14 @@
           for (const e of this.model.allTasks()) {
             this.createTask(e.description);
           }
+        }
+        deleteTask() {
+          const tasks_array = this.model.allTasks();
+          this.api.deleteData(tasks_array.reverse()[0].description);
+          let taskToDelete = document.querySelectorAll(".tasks");
+          taskToDelete = taskToDelete[taskToDelete.length - 1];
+          taskToDelete.parentNode.removeChild(taskToDelete);
+          location.reload();
         }
         #setTasks() {
           this.api.loadData((Response) => {
@@ -71,6 +84,16 @@
             body: JSON.stringify(input_data)
           }).then((response) => console.log(response));
         }
+        deleteData(description) {
+          const input_data = { data: description };
+          fetch("http://localhost:3000/tasks", {
+            method: "DELETE",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify(input_data)
+          }).then((response) => console.log(response));
+        }
       };
       module.exports = TasksAPi;
     }
@@ -85,6 +108,9 @@
         }
         setTasks(tasks_array) {
           this.tasks = tasks_array;
+        }
+        addTask(task_description) {
+          this.tasks.push({ description: task_description, urgency: null });
         }
         allTasks() {
           return this.tasks;
@@ -146,7 +172,14 @@
           this.addGoalEl = document.querySelector("#add-goal");
           this.addGoalEl.addEventListener("click", () => {
             this.api.saveData(this.textInputEL.value);
+            this.model.addGoal(this.textInputEL.value);
             this.createGoal(this.textInputEL.value);
+          });
+          this.deleteGoalsEl = document.querySelector("#delete-goal-button");
+          this.deleteGoalsEl.addEventListener("click", () => {
+            this.deleteGoal();
+            this.model.deleteGoal();
+            console.log(this.model.allGoals());
           });
         }
         createGoal(text) {
@@ -162,6 +195,15 @@
           for (const goal of this.model.allGoals()) {
             this.createGoal(goal.description);
           }
+        }
+        deleteGoal() {
+          const goals_array = this.model.allGoals();
+          this.api.deleteData(goals_array.reverse()[0].description);
+          console.log(goals_array.reverse()[0].description);
+          let goalToDelete = document.querySelectorAll(".goals");
+          goalToDelete = goalToDelete[goalToDelete.length - 1];
+          goalToDelete.parentNode.removeChild(goalToDelete);
+          location.reload();
         }
         #setGoals() {
           this.api.loadData((response) => {
@@ -191,6 +233,17 @@
             body: JSON.stringify(input_data)
           }).then((response) => console.log(response));
         }
+        deleteData(description) {
+          const input_data = { data: description };
+          console.log(description);
+          fetch("http://localhost:3000/goals", {
+            method: "DELETE",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify(input_data)
+          }).then((response) => console.log(response));
+        }
       };
       module.exports = GoalsApi;
     }
@@ -208,6 +261,12 @@
         }
         allGoals() {
           return this.goals;
+        }
+        addGoal(goal_description) {
+          this.goals.push({ description: goal_description, done: null });
+        }
+        deleteGoal() {
+          this.goals.pop();
         }
       };
       module.exports = GoalsModel2;

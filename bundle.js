@@ -15,7 +15,6 @@
           this.footerContainerEl = document.querySelector(".footerContainer");
           this.taskCounter = 0;
           this.#setTasks();
-          this.textInputEL = document.querySelector("#input");
           this.addTaskEL = document.querySelector("#add-task");
           this.addTaskEL.addEventListener("click", () => {
             const containerDiv = document.createElement("div");
@@ -30,6 +29,7 @@
             this.page.append(containerDiv);
             this.createTaskEl = document.querySelector("#createTask");
             this.createTaskEl.addEventListener("click", () => {
+              this.textInputEL = document.querySelector("#input");
               this.api.saveData(this.textInputEL.value);
               this.model.addTask(this.textInputEL.value);
               this.createTask(this.textInputEL.value);
@@ -50,7 +50,6 @@
           div.id = `task${this.taskCounter}`;
           div.addEventListener("dragstart", this.#dragStart);
           this.footerContainerEl.append(div);
-          this.textInputEL.value = " ";
         }
         displayAllTasks() {
           for (const e of this.model.allTasks()) {

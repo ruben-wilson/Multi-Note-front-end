@@ -22,10 +22,12 @@
             const inputEL = document.createElement("input");
             inputEL.type = "text";
             inputEL.id = "input";
+            const dateInputEl = document.createElement("input");
+            dateInputEl.type = "date";
             const buttonEl = document.createElement("button");
             buttonEl.id = "createTask";
             buttonEl.innerText = "create task";
-            containerDiv.append(inputEL, buttonEl);
+            containerDiv.append(inputEL, buttonEl, dateInputEl);
             this.page.append(containerDiv);
             this.createTaskEl = document.querySelector("#createTask");
             this.createTaskEl.addEventListener("click", () => {

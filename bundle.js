@@ -19,11 +19,10 @@
           this.addTaskEL = document.querySelector("#add-task");
           this.addTaskEL.addEventListener("click", () => {
             this.menuController.createMenu();
-            this.menuController.submitMenu((task) => {
-              console.log(task);
-              this.api.saveData(task.description);
-              this.model.addTask(task.description);
-              this.createTask(task.description);
+            this.menuController.onSubmitMenu((task) => {
+              this.api.saveData(task.description, task.time, task.date);
+              this.model.addTask(task.description, task.time, task.date);
+              this.createTask(task.description, task.time);
             });
           });
           this.deleteTaskEl = document.querySelector("#delete-task-button");
@@ -31,7 +30,7 @@
             this.deleteTask();
           });
         }
-        createTask(text) {
+        createTask(text, time) {
           this.taskCounter += 1;
           const div = document.createElement("div");
           div.textContent = text;
@@ -39,11 +38,13 @@
           div.className = "tasks";
           div.id = `task${this.taskCounter}`;
           div.addEventListener("dragstart", this.#dragStart);
-          this.footerContainerEl.append(div);
+          time = time.replace(":", "");
+          const boxEl = document.querySelector(`#box${time.slice(0, -2)}00`);
+          boxEl.append(div);
         }
         displayAllTasks() {
           for (const e of this.model.allTasks()) {
-            this.createTask(e.description);
+            this.createTask(e.description, e.time);
           }
         }
         deleteTask() {
@@ -96,7 +97,7 @@
           containerDiv.append(inputEL, dateInputEl, timeInputEl, buttonEl);
           this.page.append(containerDiv);
         }
-        submitMenu(callback) {
+        onSubmitMenu(callback) {
           const createTaskEl = document.querySelector("#createTask");
           createTaskEl.addEventListener("click", () => {
             const task = {
@@ -119,8 +120,8 @@
         loadData(callback) {
           fetch("http://localhost:3000/tasks").then((response) => response.json()).then((response_json) => callback(response_json));
         }
-        saveData(input) {
-          const input_data = { data: input };
+        saveData(description, time, date) {
+          const input_data = { description, time, date };
           fetch("http://localhost:3000/tasks", {
             method: "POST",
             headers: {
@@ -154,8 +155,8 @@
         setTasks(tasks_array) {
           this.tasks = tasks_array;
         }
-        addTask(task_description) {
-          this.tasks.push({ description: task_description, urgency: null });
+        addTask(task_description, task_time, task_date) {
+          this.tasks.push({ description: task_description, time: task_time, date: task_date });
         }
         allTasks() {
           return this.tasks;

@@ -1,4 +1,5 @@
 const TasksController = require('./lib/controllers/tasksController.js')
+const TaskMenuController = require('./lib/controllers/tasksMenuController.js')
 const TaskApi = require('./lib/apis/tasksApi.js')
 const TasksModel = require('./lib/models/tasksModel.js')
 
@@ -10,11 +11,12 @@ const GoalsModel = require('./lib/models/goalsModel.js')
 
 const taskApi = new TaskApi
 const taskModel = new TasksModel
+const taskMenu = new TaskMenuController
 
 const goalApi = new GoalApi
 const goalModel = new GoalsModel
 
-const tasksController = new TasksController(taskApi, taskModel)
+const tasksController = new TasksController(taskApi, taskModel, taskMenu)
 
 const goalsController = new GoalsController(goalApi, goalModel)
 

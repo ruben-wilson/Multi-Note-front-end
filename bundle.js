@@ -8,8 +8,9 @@
   var require_tasksController = __commonJS({
     "lib/controllers/tasksController.js"(exports, module) {
       var tasksController2 = class {
-        constructor(api, model) {
+        constructor(api, model, menu) {
           this.api = api, this.model = model;
+          this.menuController = menu;
           this.page = document.querySelector(".page");
           this.containerEL = document.querySelector("#testBox");
           this.footerContainerEl = document.querySelector(".footerContainer");
@@ -17,27 +18,12 @@
           this.#setTasks();
           this.addTaskEL = document.querySelector("#add-task");
           this.addTaskEL.addEventListener("click", () => {
-            const containerDiv = document.createElement("div");
-            containerDiv.id = "testContainer";
-            const inputEL = document.createElement("input");
-            inputEL.type = "text";
-            inputEL.id = "input";
-            const dateInputEl = document.createElement("input");
-            dateInputEl.type = "date";
-            const timeInputEl = document.createElement("input");
-            timeInputEl.type = "time";
-            const buttonEl = document.createElement("button");
-            buttonEl.id = "createTask";
-            buttonEl.innerText = "create task";
-            containerDiv.append(inputEL, dateInputEl, timeInputEl, buttonEl);
-            this.page.append(containerDiv);
-            this.createTaskEl = document.querySelector("#createTask");
-            this.createTaskEl.addEventListener("click", () => {
-              this.textInputEL = document.querySelector("#input");
-              this.api.saveData(this.textInputEL.value);
-              this.model.addTask(this.textInputEL.value);
-              this.createTask(this.textInputEL.value);
-              containerDiv.parentNode.removeChild(containerDiv);
+            this.menuController.createMenu();
+            this.menuController.submitMenu((task) => {
+              console.log(task);
+              this.api.saveData(task.description);
+              this.model.addTask(task.description);
+              this.createTask(task.description);
             });
           });
           this.deleteTaskEl = document.querySelector("#delete-task-button");
@@ -82,6 +68,47 @@
         }
       };
       module.exports = tasksController2;
+    }
+  });
+
+  // lib/controllers/tasksMenuController.js
+  var require_tasksMenuController = __commonJS({
+    "lib/controllers/tasksMenuController.js"(exports, module) {
+      var TasksMenu = class {
+        constructor() {
+          this.page = document.querySelector(".page");
+        }
+        createMenu() {
+          const containerDiv = document.createElement("div");
+          containerDiv.id = "testContainer";
+          const inputEL = document.createElement("input");
+          inputEL.type = "text";
+          inputEL.id = "tasksInput";
+          const dateInputEl = document.createElement("input");
+          dateInputEl.id = "tasksDate";
+          dateInputEl.type = "date";
+          const timeInputEl = document.createElement("input");
+          timeInputEl.id = "tasksTime";
+          timeInputEl.type = "time";
+          const buttonEl = document.createElement("button");
+          buttonEl.id = "createTask";
+          buttonEl.innerText = "create task";
+          containerDiv.append(inputEL, dateInputEl, timeInputEl, buttonEl);
+          this.page.append(containerDiv);
+        }
+        submitMenu(callback) {
+          const createTaskEl = document.querySelector("#createTask");
+          createTaskEl.addEventListener("click", () => {
+            const task = {
+              description: document.querySelector("#tasksInput").value,
+              date: document.querySelector("#tasksDate").value,
+              time: document.querySelector("#tasksTime").value
+            };
+            callback(task);
+          });
+        }
+      };
+      module.exports = TasksMenu;
     }
   });
 
@@ -293,6 +320,7 @@
 
   // index.js
   var TasksController = require_tasksController();
+  var TaskMenuController = require_tasksMenuController();
   var TaskApi = require_tasksApi();
   var TasksModel = require_tasksModel();
   var DropBoxView = require_dropboxview();
@@ -301,9 +329,10 @@
   var GoalsModel = require_goalsModel();
   var taskApi = new TaskApi();
   var taskModel = new TasksModel();
+  var taskMenu = new TaskMenuController();
   var goalApi = new GoalApi();
   var goalModel = new GoalsModel();
-  var tasksController = new TasksController(taskApi, taskModel);
+  var tasksController = new TasksController(taskApi, taskModel, taskMenu);
   var goalsController = new GoalsController(goalApi, goalModel);
   var dropboxView = new DropBoxView();
 })();

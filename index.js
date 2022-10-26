@@ -4,6 +4,7 @@ const TaskApi = require('./lib/apis/tasksApi.js')
 const TasksModel = require('./lib/models/tasksModel.js')
 
 const DropBoxView = require('./lib/controllers/dropboxview.js')
+const DefaultController = require('./lib/controllers/defaultsController.js')
 
 const GoalsController = require('./lib/controllers/goalsController.js')
 const GoalApi = require('./lib/apis/goalsApi.js')
@@ -17,8 +18,9 @@ const goalApi = new GoalApi
 const goalModel = new GoalsModel
 
 const tasksController = new TasksController(taskApi, taskModel, taskMenu)
-
 const goalsController = new GoalsController(goalApi, goalModel)
+
+const defaultsController = new DefaultController
 
 const dropboxView = new DropBoxView
 

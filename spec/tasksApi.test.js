@@ -1,4 +1,4 @@
-Api = require('../lib/tasksApi.js')
+Api = require('../lib/apis/tasksApi.js')
 
 require('jest-fetch-mock').enableMocks()
 

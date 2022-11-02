@@ -1,4 +1,4 @@
-const Model = require('../lib/tasksModel.js')
+const Model = require('../lib/models/tasksModel.js')
 
 describe("tasks model", ()=>{
   it("starts with an empty array", ()=>{

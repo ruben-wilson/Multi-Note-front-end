@@ -118,11 +118,11 @@
     "lib/apis/tasksApi.js"(exports, module) {
       var TasksAPi = class {
         loadData(callback) {
-          fetch("http://localhost:3000/tasks").then((response) => response.json()).then((response_json) => callback(response_json));
+          fetch("http://mulitnoteatlas-env.eba-g2x45sdw.eu-west-2.elasticbeanstalk.com/tasks").then((response) => response.json()).then((response_json) => callback(response_json));
         }
         saveData(description, time, date) {
           const input_data = { description, time, date };
-          fetch("http://localhost:3000/tasks", {
+          fetch("http://mulitnoteatlas-env.eba-g2x45sdw.eu-west-2.elasticbeanstalk.com/tasks", {
             method: "POST",
             headers: {
               "Content-Type": "application/json"
@@ -132,7 +132,7 @@
         }
         deleteData(description) {
           const input_data = { data: description };
-          fetch("http://localhost:3000/tasks", {
+          fetch("http://mulitnoteatlas-env.eba-g2x45sdw.eu-west-2.elasticbeanstalk.com/tasks", {
             method: "DELETE",
             headers: {
               "Content-Type": "application/json"
@@ -202,6 +202,38 @@
         }
       };
       module.exports = DropBoxesView;
+    }
+  });
+
+  // lib/apis/defaultsApi.js
+  var require_defaultsApi = __commonJS({
+    "lib/apis/defaultsApi.js"(exports, module) {
+      var DefaultsGoal = class {
+        loadData(callback) {
+          fetch("http://mulitnoteatlas-env.eba-g2x45sdw.eu-west-2.elasticbeanstalk.com/defaults").then((response) => response.json()).then((response_json) => callback(response_json));
+        }
+        saveData(input) {
+          const input_data = { data: input };
+          fetch("http://mulitnoteatlas-env.eba-g2x45sdw.eu-west-2.elasticbeanstalk.com/defaults", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify(input_data)
+          }).then((response) => console.log(response));
+        }
+        resetData() {
+          const data = { data: "null" };
+          fetch("http://mulitnoteatlas-env.eba-g2x45sdw.eu-west-2.elasticbeanstalk.com/defaults", {
+            method: "DELETE",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+          }).then((response) => console.log(response));
+        }
+      };
+      module.exports = DefaultsGoal;
     }
   });
 
@@ -281,13 +313,16 @@
     "lib/controllers/defaultsController.js"(exports, module) {
       var datesFormatter = require_defaultDatesFormatter();
       var DefaultController2 = class {
-        constructor() {
+        constructor(Api) {
+          this.api = Api;
           this.page = document.querySelector(".page");
           this.datesFormatter = new datesFormatter();
           this.data = [];
+          this.#setDefaults();
           this.createDefaultEL = document.querySelector("#createDefaults");
           this.createDefaultEL.addEventListener("click", () => {
             this.#createPreWorkDefault(() => {
+              this.api.resetData();
               this.startTimeEl = document.querySelector("#preWork-StartTime");
               this.endTimeEl = document.querySelector("#preWork-EndTime");
               this.#saveData(this.datesFormatter.returnTimeRange(this.startTimeEl.value, this.endTimeEl.value, "preWork", "Pre-Work Time"));
@@ -300,6 +335,7 @@
                   this.endTimeEl = document.querySelector("#postWork-EndTime");
                   this.#saveData(this.datesFormatter.returnTimeRange(this.startTimeEl.value, this.endTimeEl.value, "postWork", "After Work Time"));
                   console.log(this.data);
+                  this.api.saveData(this.data);
                   this.#setDefaultRange();
                 });
               });
@@ -389,6 +425,12 @@
           this.page.append(this.containerDiv);
           postButtonEl.addEventListener("click", callback);
         }
+        #setDefaults() {
+          this.api.loadData((response_data) => {
+            this.data = response_data;
+            this.#setDefaultRange();
+          });
+        }
       };
       module.exports = DefaultController2;
     }
@@ -456,11 +498,11 @@
     "lib/apis/goalsApi.js"(exports, module) {
       var GoalsApi = class {
         loadData(callback) {
-          fetch("http://localhost:3000/goals").then((response) => response.json()).then((response_json) => callback(response_json));
+          fetch("http://mulitnoteatlas-env.eba-g2x45sdw.eu-west-2.elasticbeanstalk.com/goals").then((response) => response.json()).then((response_json) => callback(response_json));
         }
         saveData(input) {
           const input_data = { data: input };
-          fetch("http://localhost:3000/goals", {
+          fetch("http://mulitnoteatlas-env.eba-g2x45sdw.eu-west-2.elasticbeanstalk.com/goals", {
             method: "POST",
             headers: {
               "Content-Type": "application/json"
@@ -471,7 +513,7 @@
         deleteData(description) {
           const input_data = { data: description };
           console.log(description);
-          fetch("http://localhost:3000/goals", {
+          fetch("http://mulitnoteatlas-env.eba-g2x45sdw.eu-west-2.elasticbeanstalk.com/goals", {
             method: "DELETE",
             headers: {
               "Content-Type": "application/json"
@@ -514,6 +556,7 @@
   var TaskApi = require_tasksApi();
   var TasksModel = require_tasksModel();
   var DropBoxView = require_dropboxview();
+  var DefaultApi = require_defaultsApi();
   var DefaultController = require_defaultsController();
   var GoalsController = require_goalsController();
   var GoalApi = require_goalsApi();
@@ -523,8 +566,9 @@
   var taskMenu = new TaskMenuController();
   var goalApi = new GoalApi();
   var goalModel = new GoalsModel();
+  var defaultApi = new DefaultApi();
   var tasksController = new TasksController(taskApi, taskModel, taskMenu);
   var goalsController = new GoalsController(goalApi, goalModel);
-  var defaultsController = new DefaultController();
+  var defaultsController = new DefaultController(defaultApi);
   var dropboxView = new DropBoxView();
 })();

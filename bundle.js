@@ -118,11 +118,11 @@
     "lib/apis/tasksApi.js"(exports, module) {
       var TasksAPi = class {
         loadData(callback) {
-          fetch("https://mulitnoteatlas-env.eba-g2x45sdw.eu-west-2.elasticbeanstalk.com/tasks").then((response) => response.json()).then((response_json) => callback(response_json));
+          fetch("https://multinote-backend.herokuapp.com/tasks").then((response) => response.json()).then((response_json) => callback(response_json));
         }
         saveData(description, time, date) {
           const input_data = { description, time, date };
-          fetch("https://mulitnoteatlas-env.eba-g2x45sdw.eu-west-2.elasticbeanstalk.com/tasks", {
+          fetch("https://multinote-backend.herokuapp.com/tasks", {
             method: "POST",
             headers: {
               "Content-Type": "application/json"
@@ -132,7 +132,7 @@
         }
         deleteData(description) {
           const input_data = { data: description };
-          fetch("https://mulitnoteatlas-env.eba-g2x45sdw.eu-west-2.elasticbeanstalk.com/tasks", {
+          fetch("https://multinote-backend.herokuapp.com/tasks", {
             method: "DELETE",
             headers: {
               "Content-Type": "application/json"
@@ -210,11 +210,11 @@
     "lib/apis/defaultsApi.js"(exports, module) {
       var DefaultsGoal = class {
         loadData(callback) {
-          fetch("https://mulitnoteatlas-env.eba-g2x45sdw.eu-west-2.elasticbeanstalk.com/defaults").then((response) => response.json()).then((response_json) => callback(response_json));
+          fetch("https://multinote-backend.herokuapp.com/defaults").then((response) => response.json()).then((response_json) => callback(response_json));
         }
         saveData(input) {
           const input_data = { data: input };
-          fetch("https://mulitnoteatlas-env.eba-g2x45sdw.eu-west-2.elasticbeanstalk.com/defaults", {
+          fetch("https://multinote-backend.herokuapp.com/defaults", {
             method: "POST",
             headers: {
               "Content-Type": "application/json"
@@ -224,7 +224,7 @@
         }
         resetData() {
           const data = { data: "null" };
-          fetch("https://mulitnoteatlas-env.eba-g2x45sdw.eu-west-2.elasticbeanstalk.com/defaults", {
+          fetch("https://multinote-backend.herokuapp.com/defaults", {
             method: "DELETE",
             headers: {
               "Content-Type": "application/json"
@@ -498,11 +498,11 @@
     "lib/apis/goalsApi.js"(exports, module) {
       var GoalsApi = class {
         loadData(callback) {
-          fetch("https://mulitnoteatlas-env.eba-g2x45sdw.eu-west-2.elasticbeanstalk.com/goals").then((response) => response.json()).then((response_json) => callback(response_json));
+          fetch("https://multinote-backend.herokuapp.com/goals").then((response) => response.json()).then((response_json) => callback(response_json));
         }
         saveData(input) {
           const input_data = { data: input };
-          fetch("https://mulitnoteatlas-env.eba-g2x45sdw.eu-west-2.elasticbeanstalk.com/goals", {
+          fetch("https://multinote-backend.herokuapp.com/goals", {
             method: "POST",
             headers: {
               "Content-Type": "application/json"
@@ -513,7 +513,7 @@
         deleteData(description) {
           const input_data = { data: description };
           console.log(description);
-          fetch("https://mulitnoteatlas-env.eba-g2x45sdw.eu-west-2.elasticbeanstalk.com/goals", {
+          fetch("https://multinote-backend.herokuapp.com/goals", {
             method: "DELETE",
             headers: {
               "Content-Type": "application/json"
